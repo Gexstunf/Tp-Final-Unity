@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -6,9 +7,10 @@ public class GameManager : MonoBehaviour
 
     public GameObject coinPrefab;
 
-    [SerializeField] private float spawnChance = 0.6f;
-    [SerializeField] private int totalCoins = 10;
-    [SerializeField] private int collectedCoins;
+    [SerializeField] private float _spawnChance = 0.6f;
+
+    public int totalCoins = 10;
+    public int collectedCoins;
 
     private void Awake()
     {
@@ -27,7 +29,7 @@ public class GameManager : MonoBehaviour
 
         foreach (GameObject spawn in spawnPoints)
         {
-            if (Random.value <= spawnChance)
+            if (Random.value <= _spawnChance)
             {
                 Instantiate(coinPrefab, spawn.transform.position, Quaternion.identity);
                 totalCoins++;
@@ -40,15 +42,15 @@ public class GameManager : MonoBehaviour
     public void AddCoin()
     {
         collectedCoins++;
+        FindObjectOfType<CoinUI>().UpdateCounter();
 
         if (collectedCoins >= totalCoins)
-        {
             GameCompleted();
-        }
     }
 
     void GameCompleted()
     {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Debug.Log("¡Juego completado! Todas las monedas generadas fueron recogidas.");
     }
 }
